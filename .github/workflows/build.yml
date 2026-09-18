@@ -19,29 +19,28 @@ jobs:
         with:
           flutter-version: '3.x'
 
-      - name: Extract Project Files
+      - name: Extract Zip Files
         run: |
           unzip -o *.zip || true
           if [ -d "tryuo_app" ]; then
-            cp -rn tryuo_app/* . || true
+            cp -rf tryuo_app/* . || true
           fi
 
-      - name: Generate Missing Android Files
+      - name: Create Android Configs
         run: flutter create . --platforms=android --org=com.tryuo.app
 
-      - name: Fix Code Typos
+      - name: Fix Code Typo Errors
         run: |
           find lib/ -type f -exec sed -i 's/dart0:convert/dart:convert/g' {} + || true
 
       - name: Install Dependencies
-        run: flutter pub get
+        run: flutter pub get || true
 
-      - name: Build APK
-        run: flutter build apk --debug
+      - name: Build Debug APK
+        run: flutter build apk --debug --no-tree-shake-icons
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: TRYUO-Android-APK
           path: build/app/outputs/flutter-apk/app-debug.apk
-          
