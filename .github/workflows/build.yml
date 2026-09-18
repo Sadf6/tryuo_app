@@ -26,6 +26,9 @@ jobs:
             cp -rn tryuo_app/* . || true
           fi
 
+      - name: Generate Missing Android Files
+        run: flutter create . --platforms=android --org=com.tryuo.app
+
       - name: Install Dependencies
         run: flutter pub get
 
