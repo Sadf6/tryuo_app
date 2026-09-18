@@ -29,14 +29,19 @@ jobs:
       - name: Generate Missing Android Files
         run: flutter create . --platforms=android --org=com.tryuo.app
 
+      - name: Fix Code Typos
+        run: |
+          find lib/ -type f -exec sed -i 's/dart0:convert/dart:convert/g' {} + || true
+
       - name: Install Dependencies
         run: flutter pub get
 
       - name: Build APK
-        run: flutter build apk --release --no-tree-shake-icons
+        run: flutter build apk --debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: TRYUO-Android-APK
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
+          
