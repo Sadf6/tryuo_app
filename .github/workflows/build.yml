@@ -1,9 +1,8 @@
-name: Build Android APK and iOS IPA
+name: Build APK from Zip
 on: [push, workflow_dispatch]
 
 jobs:
-  build-android:
-    name: Build Android APK
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -36,43 +35,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: TRYUO-Android-APK
+          name: TRYUO-App-APK
           path: build/app/outputs/flutter-apk/app-release.apk
-
-  build-ios:
-    name: Build iOS IPA
-    runs-on: macos-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Unzip Project
-        run: |
-          unzip -o *.zip
-          if [ -d "tryuo_app" ]; then
-            cp -r tryuo_app/* .
-          fi
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.x'
-
-      - name: Install Dependencies
-        run: flutter pub get
-
-      - name: Build iOS App
-        run: flutter build ipa --no-codesign
-
-      - name: Package IPA
-        run: |
-          cd build/ios/archive/Runner.xcarchive/Products/Applications
-          mkdir Payload
-          mv Runner.app Payload/
-          zip -r TRYUO-iOS.ipa Payload
-
-      - name: Upload iOS IPA
-        uses: actions/upload-artifact@v4
-        with:
-          name: TRYUO-iOS-IPA
-          path: build/ios/archive/Runner.xcarchive/Products/Applications/TRYUO-iOS.ipa
